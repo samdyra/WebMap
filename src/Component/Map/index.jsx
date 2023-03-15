@@ -10,6 +10,7 @@ import Map, {
   Layer,
   Popup
 } from "react-map-gl";
+import polygon from "../../constants/Shapefiles/marker.geojson";
 
 const MapScreen = (props) => {
   const {
@@ -44,8 +45,7 @@ const MapScreen = (props) => {
         mapboxAccessToken={baseMap.apiKey}
         style={{
           width: "100vw",
-          height: "92vh",
-          marginTop: "8vh",
+          height: "100vh",
         }}
         mapStyle={baseMap.url}
         attributionControl={false}
@@ -56,6 +56,21 @@ const MapScreen = (props) => {
         <FullscreenControl />
         <Marker latitude={markerCoord.lat} longitude={markerCoord.lng}/>
         <GeolocateControl />
+        <Source id="polylineLayer" type="geojson" data={dataTwo}>
+          <Layer
+            id="lineLayer"
+            type="line"
+            source="my-data"
+            layout={{
+              "line-join": "round",
+              "line-cap": "round"
+            }}
+            paint={{
+              "line-color": "rgba(0, 230, 0, 1)",
+              "line-width": 2
+            }}
+          />
+        </Source>
         {routeCoord && routeCoord.map((el) => {
           return (
             <Marker latitude={el?.lat} longitude={el.lng} offsetLeft={-20} offsetTop={-10} color="red"/>
