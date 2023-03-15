@@ -1,0 +1,33 @@
+.wrapper {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 8vh;
+  background-color: #fff;
+  box-shadow: 0 0 0.5rem #0000001a;
+
+  a {
+    font-weight: bold;
+    margin: 0 auto;
+    color: rgb(0, 20, 150);
+  }
+
+  img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 300px;
+    margin: 0 auto;
+  }
+}

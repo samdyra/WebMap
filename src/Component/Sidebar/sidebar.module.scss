@@ -1,0 +1,14 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 92vh;
+  background-color: #fff;
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+  width: 25vw;
+  overflow-y: scroll;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  color: black;
+}

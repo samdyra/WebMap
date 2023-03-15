@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+    justify-content: space-around;
+
+    align-items: center;
+    padding: 10px;
+    font-size: 15px;
+    border-bottom: 1px solid black;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+}
+
+.container:hover {
+    cursor: pointer;
+    background-color: rgb(216, 216, 216);
+}

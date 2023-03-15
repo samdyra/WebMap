@@ -1,0 +1,40 @@
+{
+  "name": "datasintesa",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.3.2",
+    "browser-image-compression": "^2.0.0",
+    "eslint": "^8.34.0",
+    "firebase": "^9.17.1",
+    "framer-motion": "^9.0.2",
+    "mapbox-gl": "^2.12.1",
+    "moment": "^2.29.4",
+    "node-sass": "^8.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-firebase-hooks": "^5.1.1",
+    "react-map-gl": "^7.0.21",
+    "react-router-dom": "^6.8.1",
+    "react-toastify": "^9.1.1",
+    "sass": "^1.58.0",
+    "use-long-press": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "eslint-plugin-react": "^7.32.2",
+    "vite": "^4.1.0"
+  },
+  "main": "index.js",
+  "repository": "https://github.com/samdyra/datasintesa.git",
+  "author": "sam ",
+  "license": "MIT"
+}
