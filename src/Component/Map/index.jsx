@@ -10,7 +10,6 @@ import Map, {
   Layer,
   Popup
 } from "react-map-gl";
-import polygon from "../../constants/Shapefiles/marker.geojson";
 
 const MapScreen = (props) => {
   const {
