@@ -2,10 +2,8 @@ import React, { useState } from "react";
 import useGetCurrentLocation from "../../hooks/useGetCurrentLocation";
 import {
   Sidebar,
-  PressComponent,
   MapScreen,
   BaseMapPicker,
-  Help
 } from "../../Component";
 import ReactSearchBox from "react-search-box";
 import search_icon from "../../assets/search_icon.png";
@@ -18,7 +16,7 @@ import { propinsiValues } from "../../constants/Shapefiles/polygon";
 
 export default function HomeScreen() {
   // ---------- HOOKS ----------
-  const [ trackingMode, setTrackingMode ] = useState(true);
+  const [ trackingMode ] = useState(true);
   const [ routeCoord, setRouteCoord ] = useState([]);
   const [ profileRoute, ] = useState("mapbox/driving");
   const { route } = useGetRoute(profileRoute, routeCoord);
@@ -110,20 +108,6 @@ export default function HomeScreen() {
     return setRouteCoord([ ...routeCoord, e.lngLat ]);
   };
 
-  const handleTrackingMode = () => {
-    setTrackingMode(!trackingMode);
-  };
-
-  
-
- 
-
-  const showModalTutorial = () => {
-    setIsModalTutorialShown(true)
-  }
-
-  
-
   const searchIcon =
     (
       <img src={search_icon} alt="search" />
@@ -140,11 +124,6 @@ export default function HomeScreen() {
     const newSearchTerm = searchTerm.filter((e) => e.item.key !== key);
     setSearchTerm(newSearchTerm);
   };
-
-
-
-
-  
 
   // ---------- RENDER FUNCTION ----------
   return (
@@ -184,11 +163,6 @@ export default function HomeScreen() {
         isMarkerShown={isMarkerShown}
         searchTerm={searchTerm}
       />
-      <PressComponent
-        handleTrackingMode={handleTrackingMode}
-        trackingMode={trackingMode}
-      />
-      <Help showModalTutorial={showModalTutorial}/>
       <BaseMapPicker setBaseMap={setBaseMap} />
     </>
   );

@@ -8,7 +8,6 @@ import Map, {
   AttributionControl,
   Source,
   Layer,
-  Popup
 } from "react-map-gl";
 import polygon from "../../constants/Shapefiles/polygon";
 import MarkerData from "../../constants/Shapefiles/marker";
@@ -17,24 +16,10 @@ import MarkerData from "../../constants/Shapefiles/marker";
 
 const MapScreen = (props) => {
   const {
-    handleMapClick = () => {}, markerCoord, baseMap, handleRouteClick = () => {}, routeCoord, trackingMode, route, savedPoint, routeSaved,isPolygonShown,isMarkerShown , searchTerm
+    markerCoord, baseMap, isPolygonShown, isMarkerShown , searchTerm
   } = props;
 
-  const handleClickMap = !trackingMode ? handleMapClick : handleRouteClick;
-  const [ popupInfo, setPopupInfo ] = React.useState(null);
-  const arrayedCoordinateTrack = routeSaved ? Object.values(routeSaved?.track || {}) : null
 
-  const dataOne = {
-    type: "Feature",
-    properties: {},
-    geometry: route[0]?.geometry
-  };
-
-  const dataTwo = {
-    type: "Feature",
-    properties: {},
-    geometry: { coordinates: arrayedCoordinateTrack, type: "LineString" }
-  }
   const SearchPolygon = () => {
     if (!searchTerm || searchTerm.length === 0) {
       return [];
@@ -43,9 +28,6 @@ const MapScreen = (props) => {
     const result = polygon.features.filter((feature) => searchKeys.has(feature.properties.ID));
     return result;
   }
-
-
-
 
   const polygonColor = (status) => {
     if (status < 250 ) {
@@ -58,9 +40,6 @@ const MapScreen = (props) => {
       return "#3CA1FF"
     }
   }
-
-
-
   
   return (
     <MapProvider>
@@ -78,7 +57,6 @@ const MapScreen = (props) => {
         mapStyle={baseMap.url}
         
         attributionControl={false}
-        onClick={(e) => handleClickMap(e)}
       >
         <AttributionControl customAttribution="Made with love by Sam X Datasintesa" style={{ color: "black" }}/>
         <NavigationControl position="bottom-right" />
@@ -87,7 +65,6 @@ const MapScreen = (props) => {
         <GeolocateControl />
        
         {SearchPolygon().map((feature) => (
-          
           <Source key={feature.id} id={feature.id} type="geojson" data={feature}>
             {console.log(feature.properties.users)}
 
@@ -102,8 +79,6 @@ const MapScreen = (props) => {
             />
           </Source>
         ))}
-        
-
        
         { isPolygonShown && (
           <Source id="polygon-layer" type="geojson" data={polygon}>
@@ -128,73 +103,6 @@ const MapScreen = (props) => {
             <Marker latitude={el?.geometry.coordinates[1]} longitude={el?.geometry.coordinates[0]} offsetLeft={-20} offsetTop={-10} color={el?.properties.status === "done" ? "green" : el?.properties.status === "ongoing" ? 'yellow' : "red" }/>
           )
         })}
-        
-        
-
-       
-
-        
-        {routeCoord && routeCoord.map((el) => {
-          return (
-            <Marker latitude={el?.lat} longitude={el.lng} offsetLeft={-20} offsetTop={-10} color="red"/>
-          )
-        })}
-        {savedPoint && savedPoint?.data ? savedPoint?.data?.map((el) => {
-          return (
-            <Marker latitude={el?.latitude || 0} longitude={el?.longitude || 0} offsetLeft={-20} offsetTop={-10} color="yellow" onClick={(e) => {
-              e.originalEvent.stopPropagation();
-              setPopupInfo(el);
-            }} />
-          )
-        }): null}
-        {route && (
-          <Source id="polylineLayer" type="geojson" data={dataOne}>
-            <Layer
-              id="lineLayer"
-              type="line"
-              source="my-data"
-              layout={{
-                "line-join": "round",
-                "line-cap": "round"
-              }}
-              paint={{
-                "line-color": "rgba(230, 0, 0, 1)",
-                "line-width": 2
-              }}
-            />
-          </Source>
-        )}
-        {routeSaved && (
-          <Source id="polylineLayer" type="geojson" data={dataTwo}>
-            <Layer
-              id="lineLayer"
-              type="line"
-              source="my-data"
-              layout={{
-                "line-join": "round",
-                "line-cap": "round"
-              }}
-              paint={{
-                "line-color": "rgba(0, 230, 0, 1)",
-                "line-width": 2
-              }}
-            />
-          </Source>
-        )}
-        {popupInfo && (
-          <Popup
-            anchor="top"
-            longitude={Number(popupInfo.longitude)}
-            latitude={Number(popupInfo.latitude)}
-            onClose={() => setPopupInfo(null)}
-          >
-            <a>
-              {popupInfo?.nama}   &nbsp;
-              {popupInfo?.namaTempat} 
-            </a>
-            <img width="100%" height="50%" src={popupInfo.image} />
-          </Popup>
-        )}
       </Map>
     </MapProvider>
   );
