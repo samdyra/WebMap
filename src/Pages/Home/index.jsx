@@ -3,30 +3,25 @@ import useGetCurrentLocation from "../../hooks/useGetCurrentLocation";
 import {
   Sidebar,
   PressComponent,
-  ControlPanel,
-  Modal,
   MapScreen,
   BaseMapPicker,
-  ModalTrack,
-  Tweet,
-  ModalTutorial,
   Help
 } from "../../Component";
+import ReactSearchBox from "react-search-box";
+import search_icon from "../../assets/search_icon.png";
+
 import { MAPBOX_API_KEY_STREET } from "../../constants";
 import useGetRoute from "../../hooks/useGetRoute";
 import s from "./Home.module.scss";
-import { toast } from "react-toastify";
 import useLoadTrack from "../../hooks/useLoadTrack";
+import { propinsiValues } from "../../constants/Shapefiles/polygon";
 
 export default function HomeScreen() {
   // ---------- HOOKS ----------
   const [ trackingMode, setTrackingMode ] = useState(true);
-  const [ panelModeControl, setPanelModeControl ] = useState("control");
   const [ routeCoord, setRouteCoord ] = useState([]);
-  const [ routeSaved, setRouteSaved ] = useState([]);
-  const [ profileRoute, setProfileRoute ] = useState("mapbox/driving");
+  const [ profileRoute, ] = useState("mapbox/driving");
   const { route } = useGetRoute(profileRoute, routeCoord);
-  const [ dataModalTrack, setDataModalTrack ] = useState([]);
   const [ shownRoute, setShownRoute ] = useState(route);
   const [ coord ] = useGetCurrentLocation();
   const [ baseMap, setBaseMap ] = useState({
@@ -35,11 +30,9 @@ export default function HomeScreen() {
 
     apiKey: MAPBOX_API_KEY_STREET,
   });
-  const res = useLoadTrack()
   const resPoint = useLoadTrack("dataSintesa")
-  const [ isModalShown, setIsModalShown ] = useState(false);
-  const [ isModalTrackShown, setIsModalTrackShown ] = useState(false);
-  const [ isModalTutorialShown, setIsModalTutorialShown ] = useState(false);
+  const [ , setIsModalShown ] = useState(false);
+  const [ , setIsModalTutorialShown ] = useState(false);
   const [ isPolygonShown, setIsPolygonShown ] = useState(false);
   const [ isMarkerShown, setIsMarkerShown ] = useState(false);
 
@@ -75,13 +68,11 @@ export default function HomeScreen() {
     lat: 0,
   });
 
-  const [ coordClick, setCoordClick ] = useState({
+  const [ , setCoordClick ] = useState({
     lng: coord.longitude,
     lat: coord.latitude,
   });
 
-  const isControl = panelModeControl === "control";
-  const isSave = panelModeControl === "save";
 
   // ---------- EFFECTS ----------
   React.useEffect(() => {
@@ -107,9 +98,7 @@ export default function HomeScreen() {
     setShownRoute([]);
   };
 
-  const handlePanelClick = (value) => {
-    setPanelModeControl(value);
-  };
+  
 
   const handleRouteClick = (e) => {
     if (routeCoord.length === 0) {
@@ -125,80 +114,37 @@ export default function HomeScreen() {
     setTrackingMode(!trackingMode);
   };
 
-  const handleProfileRoute = (data) => {
-    setProfileRoute(data);
-  };
+  
 
-  const handleSaveRoute = (value) => {
-    if (!value) {
-      return toast("Create a Track First!", { type: "warning" });
-    }
-    setDataModalTrack(value);
-    setIsModalTrackShown(true);
-  }
-
-  const onClickTrack = (data) => {
-    setRouteSaved(data)
-  }
+ 
 
   const showModalTutorial = () => {
     setIsModalTutorialShown(true)
   }
 
-  // ---------- UI VARIABLES ----------
-  const Panel = () => {
-    if (panelModeControl === "control") {
-      return (
-        <ControlPanel
-          routeCoord={routeCoord}
-          clearMap={clearMap}
-          route={route}
-          handlePanelClick={handlePanelClick}
-          panelModeControl={panelModeControl}
-          handleProfileRoute={handleProfileRoute}
-          profileRoute={profileRoute}
-          handleSaveRoute={handleSaveRoute}
-        />
-      );
-    }
+  
 
-    // TO DO: REFACTOR LATER
-    return (
-      <div className={s.wrapper}>
-        <div
-          style={{ display: "flex", alignItems: "center" }}
-          className={s.nav}
-        >
-          <div
-            className={isControl ? s.control : s.title}
-            onClick={() => handlePanelClick("control")}
-          >
-            Control Panel &nbsp;|{" "}
-          </div>
-          <div
-            className={isSave ? s.control : s.title}
-            onClick={() => handlePanelClick("save")}
-          >
-            &nbsp; Saved Data
-          </div>
-        </div>
-        <div>Saved Track Data</div>
-        <div style={{ fontSize: 13 }}>(Click Image to see the Route that were saved)</div>
-        {res && res?.data?.map((item) => {
-          return (
-            <Tweet item={item} type={"track"} onClickTrack={onClickTrack}/>
-          )
-        })}
-        <div>Saved Point Data</div>
-        <div style={{ fontSize: 13 }}>(All Points are automatically shown, without clicking. Click the points on the map to see details)</div>
-        {resPoint && resPoint?.data?.map((item) => {
-          return (
-            <Tweet item={item} type="dataSintesa" />
-          )
-        })}
-      </div>
-    );
-  }
+  const searchIcon =
+    (
+      <img src={search_icon} alt="search" />
+    )
+
+  const [ searchTerm, setSearchTerm ] = useState([])
+
+  const handleSearchClick = (record) => {
+    setSearchTerm([ ...searchTerm, record ]);
+  };
+
+
+  const removeSearchTerm = (key) => {
+    const newSearchTerm = searchTerm.filter((e) => e.item.key !== key);
+    setSearchTerm(newSearchTerm);
+  };
+
+
+
+
+  
 
   // ---------- RENDER FUNCTION ----------
   return (
@@ -207,8 +153,23 @@ export default function HomeScreen() {
         pointClick={handleMarkerShown}
         polygonClick={handlePolygonShown}
         activeLayerIndexArray={activeLayerIndex}
+        searchTerm={searchTerm}
+        removeSearchTerm={removeSearchTerm}
+        
       >
       </Sidebar>
+      <div className={s.searchbar}>
+        <ReactSearchBox
+          placeholder="Search on map"
+          data={propinsiValues}
+          callback={(record) => console.log(record)}
+          inputFontColor="#000"
+          leftIcon={searchIcon}
+          iconBoxSize="50px"
+          onSelect={handleSearchClick}
+
+        />
+      </div>
       <MapScreen
         coord={coord}
         handleMapClick={handleMapClick}
@@ -219,10 +180,9 @@ export default function HomeScreen() {
         trackingMode={trackingMode}
         route={shownRoute}
         savedPoint={resPoint}
-        // savedTrack={res}
-        routeSaved={routeSaved}
         isPolygonShown={isPolygonShown}
         isMarkerShown={isMarkerShown}
+        searchTerm={searchTerm}
       />
       <PressComponent
         handleTrackingMode={handleTrackingMode}

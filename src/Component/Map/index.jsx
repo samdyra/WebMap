@@ -1,4 +1,4 @@
-import React, { memo, useRef } from "react";
+import React, { memo } from "react";
 import Map, {
   MapProvider,
   NavigationControl,
@@ -17,7 +17,7 @@ import MarkerData from "../../constants/Shapefiles/marker";
 
 const MapScreen = (props) => {
   const {
-    handleMapClick = () => {}, markerCoord, baseMap, handleRouteClick = () => {}, routeCoord, trackingMode, route, savedPoint, routeSaved,isPolygonShown,isMarkerShown
+    handleMapClick = () => {}, markerCoord, baseMap, handleRouteClick = () => {}, routeCoord, trackingMode, route, savedPoint, routeSaved,isPolygonShown,isMarkerShown, searchTerm
   } = props;
 
   const handleClickMap = !trackingMode ? handleMapClick : handleRouteClick;
@@ -35,8 +35,22 @@ const MapScreen = (props) => {
     properties: {},
     geometry: { coordinates: arrayedCoordinateTrack, type: "LineString" }
   }
+  const SearchPolygon = () => {
+    if (!searchTerm || searchTerm.length === 0) {
+      return [];
+    }
+    const searchKeys = new Set(searchTerm.map((item) => item.item.key));
+    const result = polygon.features.filter((feature) => searchKeys.has(feature.properties.ID));
+    return result;
+  }
 
-  const myRef = useRef(null);
+
+
+
+
+
+
+
 
 
   
@@ -63,6 +77,23 @@ const MapScreen = (props) => {
         <FullscreenControl />
         <Marker latitude={markerCoord.lat} longitude={markerCoord.lng}/>
         <GeolocateControl />
+       
+        {SearchPolygon().map((feature) => (
+          <Source key={feature.id} id={feature.id} type="geojson" data={feature}>
+            <Layer
+              id={feature.id}
+              type="fill"
+              paint={{
+                "fill-color": "#2AA025",
+                "fill-opacity": 0.85,
+                "fill-outline-color": "rgba(0, 0, 0, 1)"
+              }}
+            />
+          </Source>
+        ))}
+        
+
+       
         { isPolygonShown && (
           <Source id="polygon-layer" type="geojson" data={polygon}>
             <Layer
@@ -86,7 +117,6 @@ const MapScreen = (props) => {
               id="marker-layer"
               type="symbol"
               source="my-data"
-              ref={myRef}
           
               // paint={{
               //   "fill-color": "#2AA025",

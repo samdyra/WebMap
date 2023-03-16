@@ -34860,4 +34860,17 @@ const Polygon = {
 }
 
 
+
+
 export default Polygon;
+
+export const propinsiValues = Polygon.features.map(feature => {
+  const propinsi = feature.properties.hasOwnProperty('Propinsi') ? feature.properties.Propinsi : null;
+  const ID = feature.properties.hasOwnProperty('ID') ? feature.properties.ID : null;
+
+  return {
+    key: ID,
+    value: propinsi,
+    type: "polygon"
+  };
+});

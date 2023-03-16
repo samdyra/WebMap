@@ -8,7 +8,7 @@ import layer_sub from "../../assets/layer_sub.svg";
 
 
 const SideBar = ({
-  pointClick,polygonClick,activeLayerIndexArray 
+  pointClick,polygonClick,activeLayerIndexArray,searchTerm,removeSearchTerm 
 }) => {
   const [ isOpen2, setIsOpen2 ] = useState(true);
   const [ isOpen, setIsOpen ] = useState(false);
@@ -62,7 +62,9 @@ const SideBar = ({
      return activeLayerIndexArray.includes(index);
    });
 
-  console.log(activeLayerItem)
+
+
+
 
 
 
@@ -141,6 +143,16 @@ const SideBar = ({
               
               <div className={s.menuSubItem} key={index} onClick={() => e.function()} >
                 <p>{e.name}</p>
+                <img src={layer_sub} alt="" />
+                asdasdasdad
+              </div>
+           
+            ))}
+          {searchTerm.map((e,index) => 
+            (
+              
+              <div className={s.menuSubItem} key={index} onClick={() => removeSearchTerm(e.item.key)} >
+                <p>{e.item.value}</p>
                 <img src={layer_sub} alt="" />
                 asdasdasdad
               </div>
