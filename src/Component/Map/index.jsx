@@ -113,7 +113,11 @@ const MapScreen = (props) => {
               source="my-data"
 
               paint={{
-                "fill-color": "#2AA025",
+                "fill-color": [ "case", [ "<", [ "get", "users" ], 250 ], "#FD9D0D",
+                  [ "all", [ ">=", [ "get", "users" ], 250 ], [ "<", [ "get", "users" ], 500 ] ], "#0F9504",
+                  [ "<=", [ "get", "users" ], 500 ], "#3CA1FF",
+                  "#3CA1FF"
+                ],
                 "fill-opacity": 0.85,
                 'fill-outline-color': 'rgba(0, 0, 0, 1)'
               
