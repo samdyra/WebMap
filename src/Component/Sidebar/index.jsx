@@ -5,6 +5,7 @@ import tan_icon from "../../assets/tan_icon.svg";
 import layer_list from "../../assets/layer_list.svg";
 import active_layer from "../../assets/active_layer.svg";
 import layer_sub from "../../assets/layer_sub.svg";
+import remove_layer_icon from "../../assets/remove_layer_icon.svg";
 
 
 const SideBar = ({
@@ -143,8 +144,7 @@ const SideBar = ({
               
               <div className={s.menuSubItem} key={index} onClick={() => e.function()} >
                 <p>{e.name}</p>
-                <img src={layer_sub} alt="" />
-                asdasdasdad
+                <img src={remove_layer_icon} alt="" />
               </div>
            
             ))}
@@ -153,8 +153,8 @@ const SideBar = ({
               
               <div className={s.menuSubItem} key={index} onClick={() => removeSearchTerm(e.item.key)} >
                 <p>{e.item.value}</p>
-                <img src={layer_sub} alt="" />
-                asdasdasdad
+                <img src={remove_layer_icon} alt="" />
+                
               </div>
            
             ))}

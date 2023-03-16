@@ -17,7 +17,7 @@ import MarkerData from "../../constants/Shapefiles/marker";
 
 const MapScreen = (props) => {
   const {
-    handleMapClick = () => {}, markerCoord, baseMap, handleRouteClick = () => {}, routeCoord, trackingMode, route, savedPoint, routeSaved,isPolygonShown,isMarkerShown, searchTerm
+    handleMapClick = () => {}, markerCoord, baseMap, handleRouteClick = () => {}, routeCoord, trackingMode, route, savedPoint, routeSaved,isPolygonShown,isMarkerShown , searchTerm
   } = props;
 
   const handleClickMap = !trackingMode ? handleMapClick : handleRouteClick;
@@ -47,9 +47,17 @@ const MapScreen = (props) => {
 
 
 
-
-
-
+  const polygonColor = (status) => {
+    if (status < 250 ) {
+      return "#FD9D0D"
+    }
+    else if (250 < status && status < 500) {
+      return "#0F9504"
+    }
+    else if ( status > 500) {
+      return "#3CA1FF"
+    }
+  }
 
 
 
@@ -79,12 +87,15 @@ const MapScreen = (props) => {
         <GeolocateControl />
        
         {SearchPolygon().map((feature) => (
+          
           <Source key={feature.id} id={feature.id} type="geojson" data={feature}>
+            {console.log(feature.properties.users)}
+
             <Layer
               id={feature.id}
               type="fill"
               paint={{
-                "fill-color": "#2AA025",
+                "fill-color": polygonColor(feature.properties.users),
                 "fill-opacity": 0.85,
                 "fill-outline-color": "rgba(0, 0, 0, 1)"
               }}
@@ -100,7 +111,7 @@ const MapScreen = (props) => {
               id="polygon-layer"
               type="fill"
               source="my-data"
-          
+
               paint={{
                 "fill-color": "#2AA025",
                 "fill-opacity": 0.85,
@@ -111,30 +122,13 @@ const MapScreen = (props) => {
             />
           </Source>
         )}
-        { isMarkerShown && (
-          <Source id="marker-layer" type="geojson" data={MarkerData} >
-            <Layer
-              id="marker-layer"
-              type="symbol"
-              source="my-data"
-          
-              // paint={{
-              //   "fill-color": "#2AA025",
-              //   "fill-opacity": 0.85,
-              //   'fill-outline-color': 'rgba(0, 0, 0, 1)'
-              
-              
-              // }}
-              filter={[ "==", "$type", "Point" ]}
-              layout= {{
-                "icon-image":  'marker', 'icon-size': 5, 'icon-allow-overlap': true 
-              }
-
-              }
-
-            />
-          </Source>
-        )}
+        
+        { isMarkerShown && MarkerData.features.map((el) => {
+          return (
+            <Marker latitude={el?.geometry.coordinates[1]} longitude={el?.geometry.coordinates[0]} offsetLeft={-20} offsetTop={-10} color={el?.properties.status === "done" ? "green" : el?.properties.status === "ongoing" ? 'yellow' : "red" }/>
+          )
+        })}
+        
         
 
        
