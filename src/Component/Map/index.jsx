@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useRef } from "react";
 import Map, {
   MapProvider,
   NavigationControl,
@@ -10,10 +10,14 @@ import Map, {
   Layer,
   Popup
 } from "react-map-gl";
+import polygon from "../../constants/Shapefiles/polygon";
+import MarkerData from "../../constants/Shapefiles/marker";
+
+
 
 const MapScreen = (props) => {
   const {
-    handleMapClick = () => {}, markerCoord, baseMap, handleRouteClick = () => {}, routeCoord, trackingMode, route, savedPoint, routeSaved
+    handleMapClick = () => {}, markerCoord, baseMap, handleRouteClick = () => {}, routeCoord, trackingMode, route, savedPoint, routeSaved,isPolygonShown,isMarkerShown
   } = props;
 
   const handleClickMap = !trackingMode ? handleMapClick : handleRouteClick;
@@ -32,14 +36,17 @@ const MapScreen = (props) => {
     geometry: { coordinates: arrayedCoordinateTrack, type: "LineString" }
   }
 
+  const myRef = useRef(null);
+
+
   
   return (
     <MapProvider>
       <Map
         initialViewState={{
-          longitude:0.1276 ,
-          latitude: 51.5072,
-          zoom: 15,
+          longitude: 107.550965,
+          latitude: -6.899872,
+          zoom: 5,
         }}
         mapboxAccessToken={baseMap.apiKey}
         style={{
@@ -47,6 +54,7 @@ const MapScreen = (props) => {
           height: "100vh",
         }}
         mapStyle={baseMap.url}
+        
         attributionControl={false}
         onClick={(e) => handleClickMap(e)}
       >
@@ -55,21 +63,53 @@ const MapScreen = (props) => {
         <FullscreenControl />
         <Marker latitude={markerCoord.lat} longitude={markerCoord.lng}/>
         <GeolocateControl />
-        <Source id="polylineLayer" type="geojson" data={dataTwo}>
-          <Layer
-            id="lineLayer"
-            type="line"
-            source="my-data"
-            layout={{
-              "line-join": "round",
-              "line-cap": "round"
-            }}
-            paint={{
-              "line-color": "rgba(0, 230, 0, 1)",
-              "line-width": 2
-            }}
-          />
-        </Source>
+        { isPolygonShown && (
+          <Source id="polygon-layer" type="geojson" data={polygon}>
+            <Layer
+              id="polygon-layer"
+              type="fill"
+              source="my-data"
+          
+              paint={{
+                "fill-color": "#2AA025",
+                "fill-opacity": 0.85,
+                'fill-outline-color': 'rgba(0, 0, 0, 1)'
+              
+              
+              }}
+            />
+          </Source>
+        )}
+        { isMarkerShown && (
+          <Source id="marker-layer" type="geojson" data={MarkerData} >
+            <Layer
+              id="marker-layer"
+              type="symbol"
+              source="my-data"
+              ref={myRef}
+          
+              // paint={{
+              //   "fill-color": "#2AA025",
+              //   "fill-opacity": 0.85,
+              //   'fill-outline-color': 'rgba(0, 0, 0, 1)'
+              
+              
+              // }}
+              filter={[ "==", "$type", "Point" ]}
+              layout= {{
+                "icon-image":  'marker', 'icon-size': 5, 'icon-allow-overlap': true 
+              }
+
+              }
+
+            />
+          </Source>
+        )}
+        
+
+       
+
+        
         {routeCoord && routeCoord.map((el) => {
           return (
             <Marker latitude={el?.lat} longitude={el.lng} offsetLeft={-20} offsetTop={-10} color="red"/>

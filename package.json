@@ -33,7 +33,7 @@
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react-swc": "^3.0.0",
     "eslint-plugin-react": "^7.32.2",
-    "vite": "^4.1.0"
+    "vite": "^4.1.4"
   },
   "main": "index.js",
   "repository": "https://github.com/samdyra/datasintesa.git",

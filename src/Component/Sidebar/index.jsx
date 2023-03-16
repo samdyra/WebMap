@@ -7,10 +7,14 @@ import active_layer from "../../assets/active_layer.svg";
 import layer_sub from "../../assets/layer_sub.svg";
 
 
-const SideBar = () => {
+const SideBar = ({
+  pointClick,polygonClick,activeLayerIndexArray 
+}) => {
   const [ isOpen2, setIsOpen2 ] = useState(true);
   const [ isOpen, setIsOpen ] = useState(false);
   const [ menuIndex , setMenuIndex ] = useState(100);
+
+  
 
 
 
@@ -42,18 +46,43 @@ const SideBar = () => {
   ]
   const LayerListsSubItem = [
     {
-      name: "Point"
-      // function handleOpen2() {}
-    },
-    { name: "Polygon" },
+      name: "Point",
+      function: pointClick
       
-    
+    },
+    {
+      name: "Polygon",
+      function: polygonClick 
+      
+    },
   ]
+
+  const activeLayerItem =
+   LayerListsSubItem.filter((obj, index) => {
+     return activeLayerIndexArray.includes(index);
+   });
+
+  console.log(activeLayerItem)
+
+
+
+   
+
+
+  const handleMenuClick = (index) => {
+    if (!isOpen) {
+      setIsOpen(true)
+    }
+
+    if (index === menuIndex) {
+      setIsOpen(false)
+      setMenuIndex(100)
+    }
+   
+  }
 
   
 
-
-    
 
   
   
@@ -64,7 +93,12 @@ const SideBar = () => {
         <div>
           {menuItem.map((e,index) => 
             (
-              <div className={s.menuItem} key={index} onClick={() => setMenuIndex(index)} style={{ backgroundColor: menuIndex === index && "rgba(255, 255, 255, 0.34)" }} >
+              <div className={s.menuItem} key={index} 
+                onClick={() => {
+                  setMenuIndex(index) ;
+                  handleMenuClick(index)
+                }} 
+                style={{ backgroundColor: menuIndex === index && "rgba(255, 255, 255, 0.34)" }} >
                 <div className={isOpen2 ? s.menuIcon : s.menuIconOpen}>
                   <img src={e.image} alt="" />
                 </div>
@@ -89,15 +123,31 @@ const SideBar = () => {
       </div>
       
       <div className={s.wrapper2} style={wrapper2Style}>
-        {LayerListsSubItem.map((e,index) => 
-          (
-            <div className={s.menuSubItem} key={index} >
-              <p>{e.name}</p>
-              <img src={layer_sub} alt="" />
+        {menuIndex === 0 ? (
+          <>
+            {LayerListsSubItem.map((e,index) => 
+              (
+                <div className={s.menuSubItem} key={index} onClick={() => e.function()} >
+                  <p>{e.name}</p>
+                  <img src={layer_sub} alt="" />
               
-            </div>
-          )
-        )}
+                </div>
+              )
+            )}
+          </>
+        ) : (<>
+          {activeLayerItem.map((e,index) => 
+            (
+              
+              <div className={s.menuSubItem} key={index} onClick={() => e.function()} >
+                <p>{e.name}</p>
+                <img src={layer_sub} alt="" />
+                asdasdasdad
+              </div>
+           
+            ))}
+        </>) }
+       
         
       </div>
 

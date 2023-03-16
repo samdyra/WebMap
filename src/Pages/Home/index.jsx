@@ -30,7 +30,9 @@ export default function HomeScreen() {
   const [ shownRoute, setShownRoute ] = useState(route);
   const [ coord ] = useGetCurrentLocation();
   const [ baseMap, setBaseMap ] = useState({
-    url: "mapbox://styles/mapbox/streets-v11",
+    url: "mapbox://styles/mapbox/streets-v12",
+    sprite: "mapbox://sprites/mapbox/basic-v8",
+
     apiKey: MAPBOX_API_KEY_STREET,
   });
   const res = useLoadTrack()
@@ -38,6 +40,35 @@ export default function HomeScreen() {
   const [ isModalShown, setIsModalShown ] = useState(false);
   const [ isModalTrackShown, setIsModalTrackShown ] = useState(false);
   const [ isModalTutorialShown, setIsModalTutorialShown ] = useState(false);
+  const [ isPolygonShown, setIsPolygonShown ] = useState(false);
+  const [ isMarkerShown, setIsMarkerShown ] = useState(false);
+
+  const activeLayerIndex = [];
+  if (isPolygonShown) {
+    activeLayerIndex.push(1);
+  }
+  else if (!isPolygonShown) {
+    activeLayerIndex.filter((item) => item !== 1);
+  }
+  
+  if (isMarkerShown) {
+    activeLayerIndex.push(0);
+  }
+  else if (!isMarkerShown) {
+    activeLayerIndex.filter((item) => item !== 0);
+  }
+
+
+
+  const handlePolygonShown = () => {
+    setIsPolygonShown(!isPolygonShown);
+  };
+
+  const handleMarkerShown = () => {
+    setIsMarkerShown(!isMarkerShown);
+  };
+
+  
 
   const [ markerCoord, setMarkerCoord ] = useState({
     lng: 0,
@@ -172,7 +203,11 @@ export default function HomeScreen() {
   // ---------- RENDER FUNCTION ----------
   return (
     <>
-      <Sidebar>
+      <Sidebar
+        pointClick={handleMarkerShown}
+        polygonClick={handlePolygonShown}
+        activeLayerIndexArray={activeLayerIndex}
+      >
       </Sidebar>
       <MapScreen
         coord={coord}
@@ -186,6 +221,8 @@ export default function HomeScreen() {
         savedPoint={resPoint}
         // savedTrack={res}
         routeSaved={routeSaved}
+        isPolygonShown={isPolygonShown}
+        isMarkerShown={isMarkerShown}
       />
       <PressComponent
         handleTrackingMode={handleTrackingMode}
