@@ -34859,9 +34859,6 @@ const Polygon = {
   ]
 }
 
-
-
-
 export default Polygon;
 
 export const propinsiValues = Polygon.features.map(feature => {

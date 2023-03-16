@@ -12,11 +12,9 @@ import Map, {
 import polygon from "../../constants/Shapefiles/polygon";
 import MarkerData from "../../constants/Shapefiles/marker";
 
-
-
 const MapScreen = (props) => {
   const {
-    markerCoord, baseMap, isPolygonShown, isMarkerShown , searchTerm
+    baseMap, isPolygonShown, isMarkerShown , searchTerm
   } = props;
 
 
@@ -36,7 +34,7 @@ const MapScreen = (props) => {
     else if (250 < status && status < 500) {
       return "#0F9504"
     }
-    else if ( status > 500) {
+    else {
       return "#3CA1FF"
     }
   }
@@ -55,19 +53,14 @@ const MapScreen = (props) => {
           height: "100vh",
         }}
         mapStyle={baseMap.url}
-        
         attributionControl={false}
       >
-        <AttributionControl customAttribution="Made with love by Sam X Datasintesa" style={{ color: "black" }}/>
+        <AttributionControl customAttribution="Made with love by Sam" style={{ color: "black" }}/>
         <NavigationControl position="bottom-right" />
         <FullscreenControl />
-        <Marker latitude={markerCoord.lat} longitude={markerCoord.lng}/>
         <GeolocateControl />
-       
         {SearchPolygon().map((feature) => (
           <Source key={feature.id} id={feature.id} type="geojson" data={feature}>
-            {console.log(feature.properties.users)}
-
             <Layer
               id={feature.id}
               type="fill"
@@ -79,7 +72,6 @@ const MapScreen = (props) => {
             />
           </Source>
         ))}
-       
         { isPolygonShown && (
           <Source id="polygon-layer" type="geojson" data={polygon}>
             <Layer
@@ -95,13 +87,10 @@ const MapScreen = (props) => {
                 ],
                 "fill-opacity": 0.85,
                 'fill-outline-color': 'rgba(0, 0, 0, 1)'
-              
-              
               }}
             />
           </Source>
         )}
-        
         { isMarkerShown && MarkerData.features.map((el) => {
           return (
             <Marker latitude={el?.geometry.coordinates[1]} longitude={el?.geometry.coordinates[0]} offsetLeft={-20} offsetTop={-10} color={el?.properties.status === "done" ? "green" : el?.properties.status === "ongoing" ? 'yellow' : "red" }/>
