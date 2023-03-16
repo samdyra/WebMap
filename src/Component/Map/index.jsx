@@ -1,4 +1,6 @@
-import React, { memo } from "react";
+import React, {
+  memo, useEffect, useRef 
+} from "react";
 import Map, {
   MapProvider,
   NavigationControl,
@@ -12,33 +14,20 @@ import Map, {
 import polygon from "../../constants/Shapefiles/polygon";
 import MarkerData from "../../constants/Shapefiles/marker";
 
+
+
 const MapScreen = (props) => {
   const {
-    baseMap, isPolygonShown, isMarkerShown , searchTerm
+    baseMap, isPolygonShown, isMarkerShown, zoomCoord
   } = props;
 
+  const mapRef = useRef(null)
 
-  const SearchPolygon = () => {
-    if (!searchTerm || searchTerm.length === 0) {
-      return [];
-    }
-    const searchKeys = new Set(searchTerm.map((item) => item.item.key));
-    const result = polygon.features.filter((feature) => searchKeys.has(feature.properties.ID));
-    return result;
-  }
+  useEffect(() => {
+    if (zoomCoord.length === 0) return
+    mapRef.current?.flyTo({ center: zoomCoord, zoom: 10 })
+  }, [ zoomCoord ])
 
-  const polygonColor = (status) => {
-    if (status < 250 ) {
-      return "#FD9D0D"
-    }
-    else if (250 < status && status < 500) {
-      return "#0F9504"
-    }
-    else {
-      return "#3CA1FF"
-    }
-  }
-  
   return (
     <MapProvider>
       <Map
@@ -54,24 +43,12 @@ const MapScreen = (props) => {
         }}
         mapStyle={baseMap.url}
         attributionControl={false}
+        ref={mapRef}
       >
         <AttributionControl customAttribution="Made with love by Sam" style={{ color: "black" }}/>
         <NavigationControl position="bottom-right" />
         <FullscreenControl />
         <GeolocateControl />
-        {SearchPolygon().map((feature) => (
-          <Source key={feature.id} id={feature.id} type="geojson" data={feature}>
-            <Layer
-              id={feature.id}
-              type="fill"
-              paint={{
-                "fill-color": polygonColor(feature.properties.users),
-                "fill-opacity": 0.85,
-                "fill-outline-color": "rgba(0, 0, 0, 1)"
-              }}
-            />
-          </Source>
-        ))}
         { isPolygonShown && (
           <Source id="polygon-layer" type="geojson" data={polygon}>
             <Layer

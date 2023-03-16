@@ -285,3 +285,14 @@ const MarkerData = {
 }
 
 export default MarkerData;
+
+export const pointValues = MarkerData.features.map(feature => {
+  const projectId = feature.properties.project_id;
+  const coordinates = feature.geometry.coordinates
+
+  return {
+    value: projectId,
+    type: "polygon",
+    coordinates: coordinates
+  };
+});

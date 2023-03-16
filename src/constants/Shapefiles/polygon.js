@@ -34862,12 +34862,15 @@ const Polygon = {
 export default Polygon;
 
 export const propinsiValues = Polygon.features.map(feature => {
-  const propinsi = feature.properties.hasOwnProperty('Propinsi') ? feature.properties.Propinsi : null;
-  const ID = feature.properties.hasOwnProperty('ID') ? feature.properties.ID : null;
+  const coordinates = feature.geometry.coordinates[0][0]
+  const propinsi = feature.properties.Propinsi ? feature.properties.Propinsi : null;
+  const ID = feature.properties.ID ? feature.properties.ID : null;
+  const coordinate = coordinates.length > 2 ? coordinates[0] : coordinates;
 
   return {
     key: ID,
     value: propinsi,
-    type: "polygon"
+    type: "polygon",
+    coordinates: coordinate
   };
 });

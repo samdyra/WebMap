@@ -8,11 +8,11 @@ import layer_sub from "../../assets/layer_sub.svg";
 import remove_layer_icon from "../../assets/remove_layer_icon.svg";
 
 const SideBar = ({
-  pointClick, polygonClick, activeLayerIndexArray, searchTerm, removeSearchTerm 
+  pointClick, polygonClick, activeLayerIndexArray 
 }) => {
   const [ isOpen2, setIsOpen2 ] = useState(true);
   const [ isOpen, setIsOpen ] = useState(false);
-  const [ menuIndex , setMenuIndex ] = useState(100);
+  const [ menuIndex, setMenuIndex ] = useState(100);
 
   const handleOpen2 = () => setIsOpen2(!isOpen2);
   const handleOpen = () => setIsOpen(!isOpen);
@@ -77,8 +77,6 @@ const SideBar = ({
                 <div className={isOpen2 ? s.menuIcon : s.menuIconOpen}>
                   <img src={e.image} alt="" />
                 </div>
-
-
                 {!isOpen2 && (
                   <div className={s.menuText} >
                     <p>{e.name}</p>
@@ -102,7 +100,6 @@ const SideBar = ({
                 <div className={s.menuSubItem} key={index} onClick={() => e.function()} >
                   <p>{e.name}</p>
                   <img src={layer_sub} alt="" />
-              
                 </div>
               )
             )}
@@ -110,22 +107,10 @@ const SideBar = ({
         ) : (<>
           {activeLayerItem.map((e,index) => 
             (
-              
               <div className={s.menuSubItem} key={index} onClick={() => e.function()} >
                 <p>{e.name}</p>
                 <img src={remove_layer_icon} alt="" />
               </div>
-           
-            ))}
-          {searchTerm.map((e,index) => 
-            (
-              
-              <div className={s.menuSubItem} key={index} onClick={() => removeSearchTerm(e.item.key)} >
-                <p>{e.item.value}</p>
-                <img src={remove_layer_icon} alt="" />
-                
-              </div>
-           
             ))}
         </>) }
       </div>

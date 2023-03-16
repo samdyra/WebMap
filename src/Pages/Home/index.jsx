@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Sidebar,
   MapScreen,
@@ -9,6 +9,7 @@ import search_icon from "../../assets/search_icon.png";
 import { MAPBOX_API_KEY_STREET } from "../../constants";
 import s from "./Home.module.scss";
 import { propinsiValues } from "../../constants/Shapefiles/polygon";
+import { pointValues } from "../../constants/Shapefiles/marker";
 
 export default function HomeScreen() {
   // ---------- HOOKS ----------
@@ -19,8 +20,12 @@ export default function HomeScreen() {
   });
   const [ isPolygonShown, setIsPolygonShown ] = useState(false);
   const [ isMarkerShown, setIsMarkerShown ] = useState(false);
-  const [ searchTerm, setSearchTerm ] = useState([])
+  const [ zoomCoord, setZoomCoord ] = useState([]);
   const searchIcon = <img src={search_icon} alt="search" />
+
+  const combinedData = useMemo(() => {
+    return [ ...propinsiValues, ...pointValues ]
+  }, [])
 
   const activeLayerIndex = [];
   if (isPolygonShown) {
@@ -46,12 +51,7 @@ export default function HomeScreen() {
   };
 
   const handleSearchClick = (record) => {
-    setSearchTerm([ ...searchTerm, record ]);
-  };
-
-  const removeSearchTerm = (key) => {
-    const newSearchTerm = searchTerm.filter((e) => e.item.key !== key);
-    setSearchTerm(newSearchTerm);
+    setZoomCoord(record.item.coordinates)
   };
 
   // ---------- RENDER FUNCTION ----------
@@ -61,14 +61,11 @@ export default function HomeScreen() {
         pointClick={handleMarkerShown}
         polygonClick={handlePolygonShown}
         activeLayerIndexArray={activeLayerIndex}
-        searchTerm={searchTerm}
-        removeSearchTerm={removeSearchTerm}
       />
       <div className={s.searchbar}>
         <ReactSearchBox
           placeholder="Search on map"
-          data={propinsiValues}
-          callback={(record) => console.log(record)}
+          data={combinedData}
           inputFontColor="#000"
           leftIcon={searchIcon}
           iconBoxSize="50px"
@@ -79,7 +76,7 @@ export default function HomeScreen() {
         baseMap={baseMap}
         isPolygonShown={isPolygonShown}
         isMarkerShown={isMarkerShown}
-        searchTerm={searchTerm}
+        zoomCoord={zoomCoord}
       />
       <BaseMapPicker setBaseMap={setBaseMap} />
     </>
